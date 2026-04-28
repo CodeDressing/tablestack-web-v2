@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime, timedelta
+
 from flask import Flask, render_template, redirect, url_for, request
 from models import db, Employee, ShiftTemplate, Schedule
 
@@ -25,6 +26,7 @@ AVAILABILITY_OPTIONS = ["Both", "Morning", "Dinner", "Unavailable"]
 
 def create_app():
     app = Flask(__name__)
+
     app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this")
 
     database_url = os.environ.get("DATABASE_URL")
@@ -44,6 +46,7 @@ def create_app():
         seed_shift_templates()
 
     register_routes(app)
+
     return app
 
 
@@ -282,6 +285,7 @@ def register_routes(app):
     def index():
         employee_count = Employee.query.count()
         schedule_count = Schedule.query.count()
+
         return render_template(
             "index.html",
             employee_count=employee_count,
@@ -302,6 +306,7 @@ def register_routes(app):
             }
 
             custom_times = {}
+
             for day in DAYS:
                 start = request.form.get(f"custom_start_{day}", "").strip()
                 end = request.form.get(f"custom_end_{day}", "").strip()
@@ -324,6 +329,7 @@ def register_routes(app):
 
             db.session.add(employee)
             db.session.commit()
+
             return redirect(url_for("employees"))
 
         return render_template(
@@ -348,6 +354,7 @@ def register_routes(app):
             }
 
             custom_times = {}
+
             for day in DAYS:
                 start = request.form.get(f"custom_start_{day}", "").strip()
                 end = request.form.get(f"custom_end_{day}", "").strip()
@@ -367,6 +374,7 @@ def register_routes(app):
             employee.custom_times_json = json.dumps(custom_times)
 
             db.session.commit()
+
             return redirect(url_for("employees"))
 
         return render_template(
@@ -383,8 +391,10 @@ def register_routes(app):
     @app.route("/employees/delete/<int:id>", methods=["POST"])
     def delete_employee(id):
         employee = Employee.query.get_or_404(id)
+
         db.session.delete(employee)
         db.session.commit()
+
         return redirect(url_for("employees"))
 
     @app.route("/schedules")
@@ -396,6 +406,10 @@ def register_routes(app):
     def generate_schedule():
         if request.method == "POST":
             week_start_raw = request.form.get("week_start")
+
+            if not week_start_raw:
+                return redirect(url_for("generate_schedule"))
+
             week_start = datetime.strptime(week_start_raw, "%Y-%m-%d")
 
             result = generate_smart_schedule(week_start)
@@ -418,11 +432,20 @@ def register_routes(app):
     def view_schedule(id):
         schedule = Schedule.query.get_or_404(id)
         data = json.loads(schedule.schedule_json)
-        return render_template("view_schedule.html", schedule=schedule, data=data)
+
+        return render_template(
+            "view_schedule.html",
+            schedule=schedule,
+            data=data,
+        )
 
     @app.route("/health")
     def health():
-        return {"status": "ok", "app": "TableStack Web v2"}
+        return {
+            "status": "ok",
+            "app": "TableStack Web v2",
+            "routes": "registered",
+        }
 
 
 app = create_app()
@@ -430,4 +453,9 @@ app = create_app()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
-    app.run(host="0.0.0.0", port=port, debug=True)
+
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=True,
+    )
