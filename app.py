@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request
 from models import db, Employee, ShiftTemplate
 
 
@@ -93,6 +93,53 @@ def register_routes(app):
     def employees():
         all_employees = Employee.query.order_by(Employee.name.asc()).all()
         return render_template("employees.html", employees=all_employees)
+
+    @app.route("/employees/add", methods=["GET", "POST"])
+    def add_employee():
+        if request.method == "POST":
+            employee = Employee(
+                name=request.form.get("name", "").strip(),
+                role=request.form.get("role", "Server"),
+                employment_type=request.form.get("employment_type", "Part Time"),
+                weekly_hours_target=float(request.form.get("weekly_hours_target") or 0),
+                hourly_rate=float(request.form.get("hourly_rate") or 15),
+            )
+
+            db.session.add(employee)
+            db.session.commit()
+
+            flash("Employee added successfully.")
+            return redirect(url_for("employees"))
+
+        return render_template("employee_form.html", employee=None, mode="Add")
+
+    @app.route("/employees/edit/<int:id>", methods=["GET", "POST"])
+    def edit_employee(id):
+        employee = Employee.query.get_or_404(id)
+
+        if request.method == "POST":
+            employee.name = request.form.get("name", "").strip()
+            employee.role = request.form.get("role", "Server")
+            employee.employment_type = request.form.get("employment_type", "Part Time")
+            employee.weekly_hours_target = float(request.form.get("weekly_hours_target") or 0)
+            employee.hourly_rate = float(request.form.get("hourly_rate") or 15)
+
+            db.session.commit()
+
+            flash("Employee updated successfully.")
+            return redirect(url_for("employees"))
+
+        return render_template("employee_form.html", employee=employee, mode="Edit")
+
+    @app.route("/employees/delete/<int:id>", methods=["POST"])
+    def delete_employee(id):
+        employee = Employee.query.get_or_404(id)
+
+        db.session.delete(employee)
+        db.session.commit()
+
+        flash("Employee deleted successfully.")
+        return redirect(url_for("employees"))
 
     @app.route("/health")
     def health():

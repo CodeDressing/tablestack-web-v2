@@ -25,6 +25,26 @@
             padding: 40px;
         }
 
+        a {
+            color: #00ff41;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .button {
+            background: #00ff41;
+            color: #050505;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -44,9 +64,18 @@
             background: #0f172a;
         }
 
-        a {
-            color: #00ff41;
-            text-decoration: none;
+        button {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .edit {
+            color: #38bdf8;
+            margin-right: 12px;
         }
     </style>
 </head>
@@ -57,6 +86,11 @@
     </header>
 
     <main>
+        <div class="topbar">
+            <h2>Employee Roster</h2>
+            <a class="button" href="{{ url_for('add_employee') }}">+ Add Employee</a>
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -65,8 +99,10 @@
                     <th>Type</th>
                     <th>Target Hours</th>
                     <th>Rate</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% for emp in employees %}
                 <tr>
@@ -75,6 +111,15 @@
                     <td>{{ emp.employment_type }}</td>
                     <td>{{ emp.weekly_hours_target }}</td>
                     <td>${{ "%.2f"|format(emp.hourly_rate) }}</td>
+                    <td>
+                        <a class="edit" href="{{ url_for('edit_employee', id=emp.id) }}">Edit</a>
+
+                        <form method="POST" action="{{ url_for('delete_employee', id=emp.id) }}" style="display:inline;">
+                            <button type="submit" onclick="return confirm('Delete {{ emp.name }}?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
