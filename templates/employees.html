@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employees - TableStack</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: #f4f4f4;
+        }
+
+        header {
+            background: #111827;
+            padding: 24px 40px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        h1 {
+            margin: 0;
+            color: #00ff41;
+        }
+
+        main {
+            padding: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #111827;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #1f2937;
+            text-align: left;
+        }
+
+        th {
+            color: #00ff41;
+            background: #0f172a;
+        }
+
+        a {
+            color: #00ff41;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Employees</h1>
+        <p><a href="{{ url_for('index') }}">← Dashboard</a></p>
+    </header>
+
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Type</th>
+                    <th>Target Hours</th>
+                    <th>Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td>{{ emp.name }}</td>
+                    <td>{{ emp.role }}</td>
+                    <td>{{ emp.employment_type }}</td>
+                    <td>{{ emp.weekly_hours_target }}</td>
+                    <td>${{ "%.2f"|format(emp.hourly_rate) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

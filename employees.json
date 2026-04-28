@@ -1,0 +1,649 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "name": "Brigitte Lopez",
+      "role": "Expo",
+      "type": "Part Time",
+      "hours": 27,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Monday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Tuesday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Wednesday": {
+          "start": "17:00",
+          "end": "23:00"
+        },
+        "Thursday": {
+          "start": "17:00",
+          "end": "23:00"
+        },
+        "Friday": {
+          "start": "16:00",
+          "end": "00:00"
+        },
+        "Saturday": {
+          "start": "17:00",
+          "end": "23:00"
+        },
+        "Sunday": {
+          "start": "17:00",
+          "end": "23:00"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "name": "April Lugo",
+      "role": "Parkside",
+      "type": "Part Time",
+      "hours": 31,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Thursday": {
+          "start": "16:00",
+          "end": "00:00"
+        },
+        "Friday": {
+          "start": "16:00",
+          "end": "00:00"
+        },
+        "Saturday": {
+          "start": "16:00",
+          "end": "23:00"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "name": "Joe Rinaldi",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {}
+    },
+    {
+      "id": 4,
+      "name": "Alex Ayala",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {}
+    },
+    {
+      "id": 5,
+      "name": "Christopher Chutko",
+      "role": "Bartender",
+      "type": "Part Time",
+      "hours": 10,
+      "rate": 18.0,
+      "pref": "Any",
+      "custom_times": {
+        "Friday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Saturday": {
+          "start": "11:00",
+          "end": "16:00"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "name": "Andrew Gering",
+      "role": "Owner",
+      "type": "Full Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {},
+      "availability": {
+        "Monday": "Both",
+        "Tuesday": "Both",
+        "Wednesday": "Both",
+        "Thursday": "Both",
+        "Friday": "Both",
+        "Saturday": "Both",
+        "Sunday": "Both"
+      }
+    },
+    {
+      "id": 7,
+      "name": "Shane Smith",
+      "role": "Bartender",
+      "type": "Part Time",
+      "hours": 28,
+      "rate": 18.0,
+      "pref": "Any",
+      "custom_times": {
+        "Monday": {
+          "start": "11:00",
+          "end": "23:00"
+        },
+        "Thursday": {
+          "start": "16:00",
+          "end": "00:00"
+        },
+        "Friday": {
+          "start": "16:00",
+          "end": "00:00"
+        },
+        "Saturday": {
+          "start": "16:00",
+          "end": "23:00"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "name": "Camilo Carvajal",
+      "role": "Bartender",
+      "type": "Part Time",
+      "hours": 26,
+      "rate": 18.0,
+      "pref": "Any",
+      "custom_times": {
+        "Thursday": {
+          "start": "16:00",
+          "end": "22:00"
+        },
+        "Friday": {
+          "start": "16:00",
+          "end": "22:00"
+        },
+        "Saturday": {
+          "start": "16:00",
+          "end": "23:00"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "name": "Alberto Perez",
+      "role": "Barback",
+      "type": "Part Time",
+      "hours": 34,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {},
+      "certifications": [],
+      "unavailable_dates": [],
+      "notes": "",
+      "availability": {
+        "Monday": "Both",
+        "Tuesday": "Both",
+        "Wednesday": "Both",
+        "Thursday": "Both",
+        "Friday": "Both",
+        "Saturday": "Both",
+        "Sunday": "Both"
+      }
+    },
+    {
+      "id": 10,
+      "name": "Julia Lange",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 29,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Thursday": {
+          "start": "16:00",
+          "end": "22:00"
+        },
+        "Friday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Saturday": {
+          "start": "16:00",
+          "end": "23:00"
+        },
+        "Sunday": {
+          "start": "11:00",
+          "end": "16:00"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "name": "Michael Swanson",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 24,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Monday": {
+          "start": "16:00",
+          "end": "22:00"
+        },
+        "Wednesday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Saturday": {
+          "start": "16:00",
+          "end": "23:00"
+        },
+        "Sunday": {
+          "start": "16:00",
+          "end": "22:00"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "name": "Leah D'Altilia",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 5,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Wednesday": {
+          "start": "11:00",
+          "end": "16:00"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "name": "Spencer Buonpan\u00c3\u00a9",
+      "role": "Bartender",
+      "type": "Part Time",
+      "hours": 28,
+      "rate": 18.0,
+      "pref": "Any",
+      "custom_times": {
+        "Wednesday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Thursday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Friday": {
+          "start": "11:00",
+          "end": "23:00"
+        },
+        "Saturday": {
+          "start": "16:00",
+          "end": "00:00"
+        }
+      }
+    },
+    {
+      "id": 14,
+      "name": "Jose Flores",
+      "role": "Bartender",
+      "type": "Part Time",
+      "hours": 29,
+      "rate": 18.0,
+      "pref": "Any",
+      "custom_times": {
+        "Thursday": {
+          "start": "16:00",
+          "end": "22:00"
+        },
+        "Friday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Saturday": {
+          "start": "16:00",
+          "end": "23:00"
+        }
+      }
+    },
+    {
+      "id": 15,
+      "name": "Nohelia Calderon",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {}
+    },
+    {
+      "id": 16,
+      "name": "Jose Aguirre",
+      "role": "Host",
+      "type": "Part Time",
+      "hours": 15,
+      "rate": 14.0,
+      "pref": "Any",
+      "custom_times": {
+        "Thursday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Friday": {
+          "start": "17:00",
+          "end": "21:00"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "name": "Nicole Carlin",
+      "role": "Host",
+      "type": "Part Time",
+      "hours": 8,
+      "rate": 14.0,
+      "pref": "Any",
+      "custom_times": {
+        "Thursday": {
+          "start": "17:00",
+          "end": "21:00"
+        }
+      }
+    },
+    {
+      "id": 18,
+      "name": "Vincenta Ramirez",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 26,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Monday": {
+          "start": "11:30",
+          "end": "15:00"
+        },
+        "Tuesday": {
+          "start": "11:30",
+          "end": "15:00"
+        },
+        "Wednesday": {
+          "start": "11:30",
+          "end": "15:00"
+        },
+        "Thursday": {
+          "start": "11:30",
+          "end": "15:00"
+        },
+        "Friday": {
+          "start": "11:30",
+          "end": "15:00"
+        },
+        "Saturday": {
+          "start": "11:30",
+          "end": "13:00"
+        }
+      }
+    },
+    {
+      "id": 19,
+      "name": "Haslin Castro Montoya",
+      "role": "Backwaiter",
+      "type": "Part Time",
+      "hours": 10,
+      "rate": 13.0,
+      "pref": "Any",
+      "custom_times": {
+        "Friday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Saturday": {
+          "start": "17:00",
+          "end": "22:00"
+        }
+      }
+    },
+    {
+      "id": 20,
+      "name": "Christian Rodriguez",
+      "role": "Runner",
+      "type": "Part Time",
+      "hours": 19,
+      "rate": 13.0,
+      "pref": "Any",
+      "custom_times": {
+        "Thursday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Friday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Saturday": {
+          "start": "17:00",
+          "end": "22:00"
+        }
+      }
+    },
+    {
+      "id": 21,
+      "name": "Arianna Chanalata",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 27,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Wednesday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Thursday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Friday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Saturday": {
+          "start": "11:00",
+          "end": "16:00"
+        }
+      }
+    },
+    {
+      "id": 22,
+      "name": "Ryan Schuren",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 34,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Wednesday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Thursday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Friday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Saturday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Sunday": {
+          "start": "16:00",
+          "end": "22:00"
+        }
+      }
+    },
+    {
+      "id": 23,
+      "name": "Fernando Guzman",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {}
+    },
+    {
+      "id": 24,
+      "name": "Sasha Lopes",
+      "role": "Bartender",
+      "type": "Part Time",
+      "hours": 32,
+      "rate": 18.0,
+      "pref": "Any",
+      "custom_times": {
+        "Thursday": {
+          "start": "16:00",
+          "end": "00:00"
+        },
+        "Friday": {
+          "start": "16:00",
+          "end": "00:00"
+        },
+        "Saturday": {
+          "start": "16:00",
+          "end": "23:00"
+        }
+      }
+    },
+    {
+      "id": 25,
+      "name": "Joshua Mereles",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 34,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {
+        "Monday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Tuesday": {
+          "start": "17:00",
+          "end": "22:00"
+        },
+        "Wednesday": {
+          "start": "16:00",
+          "end": "22:00"
+        },
+        "Thursday": {
+          "start": "16:00",
+          "end": "23:00"
+        },
+        "Friday": {
+          "start": "11:00",
+          "end": "16:00"
+        },
+        "Saturday": {
+          "start": "17:00",
+          "end": "23:00"
+        }
+      }
+    },
+    {
+      "id": 26,
+      "name": "Jackson Gering",
+      "role": "Food Expeditor",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {},
+      "certifications": [],
+      "unavailable_dates": [],
+      "notes": "",
+      "availability": {
+        "Monday": "Both",
+        "Tuesday": "Both",
+        "Wednesday": "Both",
+        "Thursday": "Both",
+        "Friday": "Both",
+        "Saturday": "Both",
+        "Sunday": "Both"
+      }
+    },
+    {
+      "id": 27,
+      "name": "Eileen Flynn",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {}
+    },
+    {
+      "id": 28,
+      "name": "TJ Wells",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {}
+    },
+    {
+      "id": 29,
+      "name": "Michael DePalma",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {}
+    },
+    {
+      "id": 30,
+      "name": "Brandon Leonard",
+      "role": "Server",
+      "type": "Part Time",
+      "hours": 0,
+      "rate": 15.0,
+      "pref": "Any",
+      "custom_times": {}
+    },
+    {
+      "id": 32,
+      "name": "Kaz Kalinka",
+      "role": "Manager",
+      "type": "Full Time",
+      "hours": 38,
+      "rate": 25.0,
+      "pref": "Any",
+      "custom_times": {
+        "Wednesday": {
+          "start": "11:00",
+          "end": "20:00"
+        },
+        "Thursday": {
+          "start": "11:00",
+          "end": "20:00"
+        },
+        "Friday": {
+          "start": "11:00",
+          "end": "20:00"
+        }
+      }
+    }
+  ],
+  "next_id": 34,
+  "last_updated": "2026-04-16T18:17:04.343196"
+}
