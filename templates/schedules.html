@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Schedules - TableStack</title>
+</head>
+<body style="margin:0; font-family:Arial; background:#0a0a0a; color:white;">
+    <header style="background:#111827; padding:24px 40px;">
+        <h1 style="color:#00ff41;">Schedules</h1>
+        <p><a style="color:#00ff41;" href="{{ url_for('index') }}">← Dashboard</a></p>
+    </header>
+
+    <main style="padding:40px;">
+        <p>
+            <a href="{{ url_for('generate_schedule') }}" style="background:#00ff41; color:#050505; padding:12px 18px; border-radius:8px; text-decoration:none; font-weight:bold;">
+                + Generate New Schedule
+            </a>
+        </p>
+
+        <table style="width:100%; border-collapse:collapse; background:#111827; margin-top:24px;">
+            <thead>
+                <tr style="color:#00ff41;">
+                    <th style="text-align:left; padding:12px;">Name</th>
+                    <th style="text-align:left; padding:12px;">Week Start</th>
+                    <th style="text-align:left; padding:12px;">Week End</th>
+                    <th style="text-align:left; padding:12px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for schedule in schedules %}
+                <tr>
+                    <td style="padding:12px;">{{ schedule.name }}</td>
+                    <td style="padding:12px;">{{ schedule.week_start }}</td>
+                    <td style="padding:12px;">{{ schedule.week_end }}</td>
+                    <td style="padding:12px;">
+                        <a style="color:#00ff41;" href="{{ url_for('view_schedule', id=schedule.id) }}">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

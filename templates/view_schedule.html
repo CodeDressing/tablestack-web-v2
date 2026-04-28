@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Schedule - TableStack</title>
+</head>
+<body style="margin:0; font-family:Arial; background:#0a0a0a; color:white;">
+    <header style="background:#111827; padding:24px 40px;">
+        <h1 style="color:#00ff41;">{{ schedule.name }}</h1>
+        <p>
+            <a style="color:#00ff41;" href="{{ url_for('schedules') }}">← All Schedules</a>
+        </p>
+    </header>
+
+    <main style="padding:40px;">
+        <h2>Week: {{ schedule.week_start }} to {{ schedule.week_end }}</h2>
+
+        {% if data.violations %}
+            <div style="background:#3f1d1d; border:1px solid #ef4444; padding:16px; border-radius:12px; margin-bottom:24px;">
+                <h3 style="color:#f87171;">Scheduling Warnings</h3>
+                <ul>
+                    {% for warning in data.violations %}
+                        <li>{{ warning }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <table style="width:100%; border-collapse:collapse; background:#111827;">
+            <thead>
+                <tr style="color:#00ff41; background:#0f172a;">
+                    <th style="text-align:left; padding:10px;">Date</th>
+                    <th style="text-align:left; padding:10px;">Day</th>
+                    <th style="text-align:left; padding:10px;">Shift</th>
+                    <th style="text-align:left; padding:10px;">Role</th>
+                    <th style="text-align:left; padding:10px;">Employee</th>
+                    <th style="text-align:left; padding:10px;">Start</th>
+                    <th style="text-align:left; padding:10px;">End</th>
+                    <th style="text-align:left; padding:10px;">Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data.rows %}
+                <tr>
+                    <td style="padding:10px; border-bottom:1px solid #1f2937;">{{ row.date }}</td>
+                    <td style="padding:10px; border-bottom:1px solid #1f2937;">{{ row.day }}</td>
+                    <td style="padding:10px; border-bottom:1px solid #1f2937;">{{ row.shift }}</td>
+                    <td style="padding:10px; border-bottom:1px solid #1f2937;">{{ row.role }}</td>
+                    <td style="padding:10px; border-bottom:1px solid #1f2937;">{{ row.employee }}</td>
+                    <td style="padding:10px; border-bottom:1px solid #1f2937;">{{ row.start }}</td>
+                    <td style="padding:10px; border-bottom:1px solid #1f2937;">{{ row.end }}</td>
+                    <td style="padding:10px; border-bottom:1px solid #1f2937;">{{ row.hours }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

@@ -2,67 +2,27 @@
 <html>
 <head>
     <title>TableStack Web v2</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #0a0a0a;
-            color: #f4f4f4;
-        }
-
-        header {
-            background: #111827;
-            padding: 24px 40px;
-            border-bottom: 1px solid #1f2937;
-        }
-
-        h1 {
-            margin: 0;
-            color: #00ff41;
-            font-size: 34px;
-        }
-
-        main {
-            padding: 40px;
-        }
-
-        .card {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 700px;
-        }
-
-        a {
-            color: #00ff41;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .stat {
-            font-size: 42px;
-            color: #00ff41;
-            margin: 20px 0;
-        }
-    </style>
 </head>
-<body>
-    <header>
-        <h1>TableStack Web v2</h1>
+<body style="margin:0; font-family:Arial; background:#0a0a0a; color:#f4f4f4;">
+    <header style="background:#111827; padding:24px 40px; border-bottom:1px solid #1f2937;">
+        <h1 style="margin:0; color:#00ff41; font-size:34px;">TableStack Web v2</h1>
         <p>Restaurant scheduling, staffing intelligence, and future sales prediction.</p>
     </header>
 
-    <main>
-        <div class="card">
+    <main style="padding:40px;">
+        <div style="background:#111827; border:1px solid #1f2937; border-radius:16px; padding:24px; max-width:760px;">
             <h2>System Status</h2>
             <p>SQL foundation is running.</p>
-            <div class="stat">{{ employee_count }}</div>
+
+            <p style="font-size:38px; color:#00ff41; margin:20px 0;">{{ employee_count }}</p>
             <p>employees loaded</p>
 
-            <p>
-                <a href="{{ url_for('employees') }}">View Employees →</a>
-            </p>
+            <p style="font-size:38px; color:#00ff41; margin:20px 0;">{{ schedule_count }}</p>
+            <p>schedules saved</p>
+
+            <p><a style="color:#00ff41; font-weight:bold;" href="{{ url_for('employees') }}">View Employees →</a></p>
+            <p><a style="color:#00ff41; font-weight:bold;" href="{{ url_for('schedules') }}">View Schedules →</a></p>
+            <p><a style="color:#00ff41; font-weight:bold;" href="{{ url_for('generate_schedule') }}">Generate Schedule →</a></p>
         </div>
     </main>
 </body>
