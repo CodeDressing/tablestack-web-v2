@@ -17,16 +17,32 @@ ROLES = [
     "Expo",
     "Food Expeditor",
     "Host",
+    "Dishwasher",
+    "Kitchen",
     "Manager",
     "Owner",
 ]
 
+SCHEDULE_ROLES = [
+    "Server",
+    "Bartender",
+    "Kitchen",
+    "Dishwasher",
+    "Busser",
+    "Runner",
+    "Host",
+    "Barback",
+    "Food Expeditor",
+    "Manager",
+]
+
 AVAILABILITY_OPTIONS = ["Both", "Morning", "Dinner", "Unavailable"]
+
+SHIFT_NAMES = ["Morning Shift", "Dinner Shift"]
 
 
 def create_app():
     app = Flask(__name__)
-
     app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this")
 
     database_url = os.environ.get("DATABASE_URL")
@@ -46,9 +62,12 @@ def create_app():
         seed_shift_templates()
 
     register_routes(app)
-
     return app
 
+
+# ============================================================
+# SEEDING
+# ============================================================
 
 def seed_shift_templates():
     if ShiftTemplate.query.count() > 0:
@@ -75,6 +94,10 @@ def seed_shift_templates():
     db.session.commit()
 
 
+# ============================================================
+# JSON / EMPLOYEE HELPERS
+# ============================================================
+
 def load_json(text, fallback):
     try:
         return json.loads(text or "")
@@ -88,6 +111,7 @@ def default_availability():
 
 def get_employee_availability(emp):
     data = load_json(emp.availability_json, {})
+
     if not data:
         data = default_availability()
 
@@ -125,7 +149,7 @@ def get_shift_times_for_employee(emp, day, shift):
         return {
             "start": custom.get("start", shift.start_time),
             "end": custom.get("end", shift.end_time),
-            "hours": shift.hours,
+            "hours": estimate_hours(custom.get("start"), custom.get("end"), shift.hours),
         }
 
     return {
@@ -135,16 +159,36 @@ def get_shift_times_for_employee(emp, day, shift):
     }
 
 
+def estimate_hours(start, end, fallback):
+    if not start or not end:
+        return fallback
+
+    try:
+        start_dt = datetime.strptime(start, "%H:%M")
+        end_dt = datetime.strptime(end, "%H:%M")
+
+        if end_dt <= start_dt:
+            end_dt += timedelta(days=1)
+
+        hours = (end_dt - start_dt).total_seconds() / 3600
+        return round(hours, 2)
+    except Exception:
+        return fallback
+
+
 def role_aliases(role):
     aliases = {
         "Runner": ["Runner", "Food Runner"],
         "Food Expeditor": ["Food Expeditor", "Expo"],
         "Expo": ["Expo", "Food Expeditor"],
         "Backwaiter": ["Backwaiter", "Busser"],
-        "Barback": ["Barback"],
-        "Server": ["Server"],
+        "Busser": ["Busser", "Backwaiter"],
+        "Dishwasher": ["Dishwasher"],
+        "Kitchen": ["Kitchen", "Kitchen Worker"],
+        "Server": ["Server", "Parkside"],
         "Bartender": ["Bartender"],
         "Host": ["Host"],
+        "Barback": ["Barback"],
         "Manager": ["Manager", "Owner"],
         "Owner": ["Owner", "Manager"],
     }
@@ -152,48 +196,104 @@ def role_aliases(role):
     return aliases.get(role, [role])
 
 
-def generate_smart_schedule(week_start):
+# ============================================================
+# STAFFING PLAN
+# ============================================================
+
+def default_staffing_plan():
+    plan = {}
+
+    for day in DAYS:
+        plan[day] = {
+            "Morning Shift": {
+                "Server": 2,
+                "Bartender": 1,
+                "Kitchen": 1,
+                "Dishwasher": 0,
+                "Busser": 1,
+                "Runner": 1,
+                "Host": 1,
+                "Barback": 0,
+                "Food Expeditor": 1,
+                "Manager": 1,
+            },
+            "Dinner Shift": {
+                "Server": 4,
+                "Bartender": 2,
+                "Kitchen": 2,
+                "Dishwasher": 1,
+                "Busser": 1,
+                "Runner": 2,
+                "Host": 1,
+                "Barback": 1,
+                "Food Expeditor": 1,
+                "Manager": 1,
+            },
+        }
+
+    return plan
+
+
+def parse_staffing_plan_from_form(form):
+    plan = {}
+
+    for day in DAYS:
+        plan[day] = {}
+
+        for shift_name in SHIFT_NAMES:
+            plan[day][shift_name] = {}
+
+            for role in SCHEDULE_ROLES:
+                field_name = staffing_field_name(day, shift_name, role)
+                raw_value = form.get(field_name, "0")
+
+                try:
+                    count = int(raw_value)
+                except ValueError:
+                    count = 0
+
+                plan[day][shift_name][role] = max(0, count)
+
+    return plan
+
+
+def staffing_field_name(day, shift_name, role):
+    clean_day = day.replace(" ", "_")
+    clean_shift = shift_name.replace(" ", "_")
+    clean_role = role.replace(" ", "_")
+    return f"staff_{clean_day}_{clean_shift}_{clean_role}"
+
+
+# ============================================================
+# SCHEDULE ENGINE
+# ============================================================
+
+def generate_smart_schedule(week_start, staffing_plan):
     employees = Employee.query.order_by(Employee.name.asc()).all()
     shifts = ShiftTemplate.query.order_by(ShiftTemplate.id.asc()).all()
 
-    role_needs = {
-        "Morning Shift": {
-            "Server": 2,
-            "Bartender": 1,
-            "Host": 1,
-            "Runner": 1,
-            "Backwaiter": 1,
-            "Food Expeditor": 1,
-            "Barback": 1,
-            "Manager": 1,
-        },
-        "Dinner Shift": {
-            "Server": 4,
-            "Bartender": 2,
-            "Host": 1,
-            "Runner": 2,
-            "Backwaiter": 1,
-            "Food Expeditor": 1,
-            "Barback": 1,
-            "Manager": 1,
-        },
-    }
-
     employee_hours = {emp.id: 0 for emp in employees}
     employee_shift_count = {emp.id: 0 for emp in employees}
+    employee_labor_cost = {emp.id: 0 for emp in employees}
 
     rows = []
     violations = []
+    coverage_summary = {}
+    labor_total = 0
 
     for day_index, day in enumerate(DAYS):
         current_date = week_start + timedelta(days=day_index)
+        coverage_summary[day] = {}
 
         for shift in shifts:
-            needs = role_needs.get(shift.name, {})
+            shift_plan = staffing_plan.get(day, {}).get(shift.name, {})
+            coverage_summary[day][shift.name] = {}
 
-            for needed_role, needed_count in needs.items():
+            for needed_role, needed_count in shift_plan.items():
+                if needed_count <= 0:
+                    continue
+
                 allowed_roles = role_aliases(needed_role)
-
                 candidates = []
 
                 for emp in employees:
@@ -203,7 +303,8 @@ def generate_smart_schedule(week_start):
                     if not employee_available_for_shift(emp, day, shift.name):
                         continue
 
-                    projected_hours = employee_hours[emp.id] + shift.hours
+                    shift_time = get_shift_times_for_employee(emp, day, shift)
+                    projected_hours = employee_hours[emp.id] + shift_time["hours"]
 
                     if emp.weekly_hours_target > 0 and projected_hours > emp.weekly_hours_target:
                         continue
@@ -215,17 +316,30 @@ def generate_smart_schedule(week_start):
                         employee_hours[emp.id],
                         employee_shift_count[emp.id],
                         emp.weekly_hours_target,
+                        emp.hourly_rate,
                         emp.name.lower(),
                     )
                 )
 
                 selected = candidates[:needed_count]
+                filled_count = len(selected)
+                missing_count = max(0, needed_count - filled_count)
+
+                coverage_summary[day][shift.name][needed_role] = {
+                    "needed": needed_count,
+                    "filled": filled_count,
+                    "missing": missing_count,
+                }
 
                 for emp in selected:
                     shift_time = get_shift_times_for_employee(emp, day, shift)
+                    shift_hours = shift_time["hours"]
+                    shift_cost = round(shift_hours * emp.hourly_rate, 2)
 
-                    employee_hours[emp.id] += shift.hours
+                    employee_hours[emp.id] += shift_hours
                     employee_shift_count[emp.id] += 1
+                    employee_labor_cost[emp.id] += shift_cost
+                    labor_total += shift_cost
 
                     rows.append(
                         {
@@ -234,17 +348,22 @@ def generate_smart_schedule(week_start):
                             "shift": shift.name,
                             "role": needed_role,
                             "employee": emp.name,
+                            "employee_id": emp.id,
                             "start": shift_time["start"],
                             "end": shift_time["end"],
-                            "hours": shift_time["hours"],
+                            "hours": shift_hours,
+                            "rate": emp.hourly_rate,
+                            "labor_cost": shift_cost,
+                            "status": "assigned",
                         }
                     )
 
-                if len(selected) < needed_count:
-                    missing = needed_count - len(selected)
-                    violations.append(f"{day} {shift.name}: missing {missing} {needed_role}(s)")
+                if missing_count > 0:
+                    violations.append(
+                        f"{day} {shift.name}: missing {missing_count} {needed_role}(s)"
+                    )
 
-                    for _ in range(missing):
+                    for _ in range(missing_count):
                         rows.append(
                             {
                                 "date": current_date.strftime("%Y-%m-%d"),
@@ -252,14 +371,32 @@ def generate_smart_schedule(week_start):
                                 "shift": shift.name,
                                 "role": needed_role,
                                 "employee": "UNASSIGNED",
+                                "employee_id": None,
                                 "start": shift.start_time,
                                 "end": shift.end_time,
                                 "hours": shift.hours,
+                                "rate": 0,
+                                "labor_cost": 0,
+                                "status": "unassigned",
                             }
                         )
 
+    employee_hour_summary = []
     for emp in employees:
-        hours = employee_hours.get(emp.id, 0)
+        hours = round(employee_hours.get(emp.id, 0), 2)
+        cost = round(employee_labor_cost.get(emp.id, 0), 2)
+
+        if hours > 0:
+            employee_hour_summary.append(
+                {
+                    "employee": emp.name,
+                    "role": emp.role,
+                    "target_hours": emp.weekly_hours_target,
+                    "scheduled_hours": hours,
+                    "hourly_rate": emp.hourly_rate,
+                    "labor_cost": cost,
+                }
+            )
 
         if emp.employment_type == "Full Time" and 0 < hours < 30:
             violations.append(f"{emp.name}: Full Time but only scheduled {hours} hours")
@@ -270,15 +407,29 @@ def generate_smart_schedule(week_start):
         if hours > 40:
             violations.append(f"{emp.name}: scheduled over 40 hours")
 
+    employee_hour_summary.sort(key=lambda item: item["employee"].lower())
+
+    assigned_rows = [row for row in rows if row["status"] == "assigned"]
+    unassigned_rows = [row for row in rows if row["status"] == "unassigned"]
+
     return {
         "week_start": week_start.strftime("%Y-%m-%d"),
         "week_end": (week_start + timedelta(days=6)).strftime("%Y-%m-%d"),
         "rows": rows,
-        "employee_hours": employee_hours,
+        "staffing_plan": staffing_plan,
+        "coverage_summary": coverage_summary,
+        "employee_hour_summary": employee_hour_summary,
+        "labor_total": round(labor_total, 2),
+        "assigned_count": len(assigned_rows),
+        "unassigned_count": len(unassigned_rows),
         "violations": violations,
-        "engine": "Phase 4 Smart Scheduler",
+        "engine": "Phase 5 Manager Staffing Planner",
     }
 
+
+# ============================================================
+# ROUTES
+# ============================================================
 
 def register_routes(app):
     @app.route("/")
@@ -411,11 +562,11 @@ def register_routes(app):
                 return redirect(url_for("generate_schedule"))
 
             week_start = datetime.strptime(week_start_raw, "%Y-%m-%d")
-
-            result = generate_smart_schedule(week_start)
+            staffing_plan = parse_staffing_plan_from_form(request.form)
+            result = generate_smart_schedule(week_start, staffing_plan)
 
             schedule = Schedule(
-                name=f"Week of {result['week_start']}",
+                name=request.form.get("schedule_name") or f"Week of {result['week_start']}",
                 week_start=result["week_start"],
                 week_end=result["week_end"],
                 schedule_json=json.dumps(result),
@@ -426,7 +577,14 @@ def register_routes(app):
 
             return redirect(url_for("view_schedule", id=schedule.id))
 
-        return render_template("generate_schedule.html")
+        return render_template(
+            "generate_schedule.html",
+            days=DAYS,
+            shifts=SHIFT_NAMES,
+            roles=SCHEDULE_ROLES,
+            staffing_plan=default_staffing_plan(),
+            staffing_field_name=staffing_field_name,
+        )
 
     @app.route("/schedules/<int:id>")
     def view_schedule(id):
@@ -445,6 +603,7 @@ def register_routes(app):
             "status": "ok",
             "app": "TableStack Web v2",
             "routes": "registered",
+            "engine": "Phase 5 Manager Staffing Planner",
         }
 
 

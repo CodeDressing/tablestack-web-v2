@@ -5,16 +5,51 @@
 </head>
 <body style="margin:0; font-family:Arial; background:#0a0a0a; color:white;">
     <header style="background:#111827; padding:24px 40px;">
-        <h1 style="color:#00ff41;">Generate Schedule</h1>
+        <h1 style="color:#00ff41;">Generate Smart Schedule</h1>
         <p><a style="color:#00ff41;" href="{{ url_for('index') }}">← Dashboard</a></p>
     </header>
 
     <main style="padding:40px;">
-        <form method="POST" style="background:#111827; padding:28px; max-width:500px; border-radius:16px;">
-            <label>Week Starting Monday</label><br>
-            <input type="date" name="week_start" required style="width:100%; padding:12px; margin-top:8px;"><br>
+        <form method="POST" style="background:#111827; padding:28px; border-radius:16px;">
+            <h2 style="color:#00ff41;">Schedule Setup</h2>
 
-            <button type="submit" style="margin-top:24px; background:#00ff41; color:#050505; border:none; padding:12px 18px; border-radius:8px; font-weight:bold;">
+            <label>Schedule Name</label><br>
+            <input name="schedule_name" placeholder="Week of..." style="padding:12px; width:320px; margin:8px 0 18px;"><br>
+
+            <label>Week Starting Monday</label><br>
+            <input type="date" name="week_start" required style="padding:12px; width:320px; margin:8px 0 28px;"><br>
+
+            <h2 style="color:#00ff41;">Manager Staffing Planner</h2>
+            <p style="color:#9ca3af;">
+                Before generating the schedule, set exactly how many people you want in each role for every shift, every day.
+            </p>
+
+            {% for day in days %}
+                <section style="margin-top:32px; padding:20px; border:1px solid #1f2937; border-radius:14px; background:#0f172a;">
+                    <h2 style="color:#00ff41;">{{ day }}</h2>
+
+                    {% for shift in shifts %}
+                        <h3 style="color:#38bdf8;">{{ shift }}</h3>
+
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:14px; margin-bottom:24px;">
+                            {% for role in roles %}
+                                <div>
+                                    <label>{{ role }}</label><br>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        name="{{ staffing_field_name(day, shift, role) }}"
+                                        value="{{ staffing_plan[day][shift].get(role, 0) }}"
+                                        style="width:100%; padding:10px; box-sizing:border-box;"
+                                    >
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </section>
+            {% endfor %}
+
+            <button type="submit" style="margin-top:30px; background:#00ff41; color:#050505; border:none; padding:14px 22px; border-radius:8px; font-weight:bold;">
                 Generate Schedule
             </button>
         </form>
