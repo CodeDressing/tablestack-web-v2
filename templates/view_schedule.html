@@ -14,16 +14,7 @@
     <main style="padding:40px;">
         <h2>Week: {{ schedule.week_start }} to {{ schedule.week_end }}</h2>
 
-        {% if data.violations %}
-            <div style="background:#3f1d1d; border:1px solid #ef4444; padding:16px; border-radius:12px; margin-bottom:24px;">
-                <h3 style="color:#f87171;">Scheduling Warnings</h3>
-                <ul>
-                    {% for warning in data.violations %}
-                        <li>{{ warning }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+
 
         <table style="width:100%; border-collapse:collapse; background:#111827;">
             <thead>
